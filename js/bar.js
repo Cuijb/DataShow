@@ -41,6 +41,7 @@ var showDatas = function () {
         curDatas.sort(function (d1, d2) {
             return config.sorted * (Number(d1.value) - Number(d2.value));
         });
+        dateLabel.text(curDate);
         showCurDatas(curDatas);
     }, config.refresh_interval);
 };
@@ -69,6 +70,11 @@ var xAxis = d3.axisBottom()
         return value < 0 ? "" : value;
     });
 var yAxis = d3.axisLeft().scale(yScale);
+
+var dateLabel = rootG.append("text")
+    .attr("class", "dateLabel")
+    .attr("text-anchor", "end")
+    .attr("transform", `translate(${svgWInner},${config.sorted < 0 ? svgHInner : svgP})`);
 
 var data4X = function (data) {
     return Number(data.value);
@@ -141,6 +147,7 @@ var dataEnterInit = function (enters) {
         .attr("fill", "#FFFFFF")
         .attr("fill-opacity", 0.5)
         .attr("font-size", config.font_size)
+        .attr("text-anchor", "end")
         .text(dataLabel);
     enterG.append("text")
         .attr("class", "barValue")
@@ -149,6 +156,7 @@ var dataEnterInit = function (enters) {
         .attr("fill", dataColor)
         .attr("fill-opacity", 0.5)
         .attr("font-size", config.font_size)
+        .attr("text-anchor", "start")
         .text(0);
     dataExistRefresh(enterG);
 };
@@ -168,13 +176,11 @@ var dataExistRefresh = function (exits) {
         .attr("x", function (data) {
             return scale4X(data) - 10;
         })
-        .attr("text-anchor", "end")
         .attr("fill-opacity", 1);
     refreshTransition.select("text.barValue")
         .attr("x", function (data) {
             return scale4X(data) + 10;
         })
-        .attr("text-anchor", "start")
         .attr("fill-opacity", 1)
         .tween("text", function (data) {
             var round = d3.interpolateRound(this.textContent, data4X(data));

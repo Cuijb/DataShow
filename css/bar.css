@@ -12,3 +12,9 @@ g.xAxis4Bar g.tick text {
     fill: #8E8883;
     font-size: 12pt;
 }
+
+.dateLabel {
+    fill: #5C5C5C;
+    font-size: 60px;
+    font-weight: bold;
+}
