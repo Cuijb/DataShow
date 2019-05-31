@@ -1,18 +1,18 @@
 
 const transition = {
     // 动态切换过程的持续时长，毫秒
-    duration: 1000,
+    duration: 600,
 
     // 动态切换后稳定展示时长，毫秒
-    delay: 500
+    delay: 400
 };
 
 const config = {
     // 数据显示区域的宽度，像素
-    width: 1600,
+    width: 1200,
 
     // 数据显示区域的高度，像素
-    height: 900,
+    height: 700,
 
     // 数据刷新间隔 = 动画切换时长 + 稳定展示时长
     refresh_interval: transition.duration + transition.delay,
