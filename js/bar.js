@@ -183,9 +183,11 @@ var dataExistRefresh = function (exits) {
         })
         .attr("fill-opacity", 1)
         .tween("text", function (data) {
-            var round = d3.interpolateRound(this.textContent, data4X(data));
+            var from = Number(this.textContent);
+            var to = data4X(data);
+            var round = parseInt(to) == to ? d3.interpolateRound(from, to) : d3.interpolateNumber(from, to);
             return function (t) {
-                this.textContent = round(t);
+                this.textContent = d3.format(".1~f")(round(t));
             };
         });
 };
