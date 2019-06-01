@@ -17,9 +17,6 @@ const config = {
     // 数据显示区域的高度，像素
     height: 700,
 
-    // 数据显示区域四周的空白宽度，像素
-    padding: 40,
-
     // 数据排序：-1，从大到小倒序；0，显示原始顺序；1，从小到大正序
     sorted: -1,
 
@@ -36,9 +33,30 @@ const config = {
     // left: 仅显示在左边
     // right: 仅显示在右边
     // both: left+right
-    label_y_position: "both",
+    label_y_position: "both"
+};
+
+// 数据显示区域四周的空白宽度，像素
+const padding = {
+    top: 60, // 顶部
+    bottom: 40, // 底部
+    left: 30, // 左边
+    right: 30, // 右边
 
     // y轴标签显示占用宽度，字数越多越宽
     // 当 左边显示y轴标签时 生效
-    label_y_padding: 100
+    label_left: 100
+};
+
+// 标题
+const caption = {
+    title: "在config.js中设置caption（元）", // 标题内容
+    font_size: 30,  // 字体大小
+    fill: "#5C5C5C"  // 颜色
+};
+
+// 日期标签
+const dateConfig = {
+    font_size: 60,  // 字体大小
+    fill: "#5C5C5C"  // 颜色
 };

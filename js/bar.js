@@ -81,13 +81,13 @@ var dataColor = function (data) {
 var barH = 1.4 * config.font_size;
 var barRx = barH / 2;
 var barTextH = barH + (config.font_size - 4) / 2;
-var svg_y_padding = showLeftLabel() ? config.label_y_padding : config.padding;
+var svg_left_padding = showLeftLabel() ? padding.label_left : padding.left;
 var svgW = config.width;
 var svgH = config.height;
 var svg = d3.select("#svg4Bar").attr("width", svgW).attr("height", svgH);
-var svgWInner = svgW - svg_y_padding - config.padding;
-var svgHInner = svgH - 2 * config.padding;
-var rootG = svg.append("g").attr("transform", `translate(${svg_y_padding},${config.padding})`);
+var svgWInner = svgW - svg_left_padding - padding.right;
+var svgHInner = svgH - padding.top - padding.bottom;
+var rootG = svg.append("g").attr("transform", `translate(${svg_left_padding},${padding.top})`);
 var xAxisG = rootG.append("g").attr("class", "xAxis4Bar").attr("transform", `translate(0,${svgHInner})`);
 var yAxisG = rootG.append("g").attr("class", "yAxis4Bar").attr("fill-opacity", 0);
 var xScale = d3.scaleLinear().range([0, svgWInner]);
@@ -103,10 +103,21 @@ var xAxis = d3.axisBottom()
     });
 var yAxis = d3.axisLeft().scale(yScale);
 
+var captionLabel = svg.append("text")
+    .attr("x", svgW / 2)
+    .attr("y", padding.top / 2)
+    .attr("width", svgW)
+    .attr("height", padding.top)
+    .attr("fill", caption.fill)
+    .attr("font-size", caption.font_size)
+    .attr("text-anchor", "middle")
+    .text(caption.title);
+
 var dateLabel = rootG.append("text")
-    .attr("class", "dateLabel")
+    .attr("fill", dateConfig.fill)
+    .attr("font-size", dateConfig.font_size)
     .attr("text-anchor", "end")
-    .attr("transform", `translate(${svgWInner},${config.sorted < 0 ? svgHInner : config.padding})`);
+    .attr("transform", `translate(${svgWInner},${config.sorted < 0 ? svgHInner : padding.top})`);
 
 var showCurDatas = function (datas) {
     var minX = d3.min(datas, data4X);
