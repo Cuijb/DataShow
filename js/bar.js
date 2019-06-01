@@ -46,35 +46,13 @@ var showDatas = function () {
     }, config.refresh_interval);
 };
 
-var barH = 1.4 * config.font_size;
-var barRx = barH / 2;
-var barTextH = barH + (config.font_size - 4) / 2;
-const svgP = 60;
-var svgW = config.width;
-var svgH = config.height;
-var svg = d3.select("#svg4Bar").attr("width", svgW).attr("height", svgH);
-var svgWInner = svgW - 2 * svgP;
-var svgHInner = svgH - 2 * svgP;
-const rootG = svg.append("g").attr("transform", `translate(${svgP},${svgP})`);
-var xAxisG = rootG.append("g").attr("class", "xAxis4Bar").attr("transform", `translate(0,${svgHInner})`);
-var yAxisG = rootG.append("g").attr("class", "yAxis4Bar").attr("fill-opacity", 0);
-var xScale = d3.scaleLinear().range([0, svgWInner]);
-var yScale = d3.scaleBand().range([svgHInner, 0]);
-var xAxis = d3.axisBottom()
-    .scale(xScale)
-    .ticks(config.ticks)
-    .tickPadding(10)
-    .tickSizeInner(-svgHInner)
-    .tickSizeOuter(0)
-    .tickFormat(function (value) {
-        return value < 0 ? "" : value;
-    });
-var yAxis = d3.axisLeft().scale(yScale);
+var showLeftLabel = function () {
+    return "both" == config.label_y_position || "left" == config.label_y_position;
+};
 
-var dateLabel = rootG.append("text")
-    .attr("class", "dateLabel")
-    .attr("text-anchor", "end")
-    .attr("transform", `translate(${svgWInner},${config.sorted < 0 ? svgHInner : svgP})`);
+var showRightLabel = function () {
+    return "both" == config.label_y_position || "right" == config.label_y_position;
+};
 
 var data4X = function (data) {
     return Number(data.value);
@@ -99,6 +77,36 @@ var dataLabel = function (data) {
 var dataColor = function (data) {
     return d3.schemeCategory10[Math.floor(data.type.charCodeAt() % 10)];
 };
+
+var barH = 1.4 * config.font_size;
+var barRx = barH / 2;
+var barTextH = barH + (config.font_size - 4) / 2;
+var svg_y_padding = showLeftLabel() ? config.label_y_padding : config.padding;
+var svgW = config.width;
+var svgH = config.height;
+var svg = d3.select("#svg4Bar").attr("width", svgW).attr("height", svgH);
+var svgWInner = svgW - svg_y_padding - config.padding;
+var svgHInner = svgH - 2 * config.padding;
+var rootG = svg.append("g").attr("transform", `translate(${svg_y_padding},${config.padding})`);
+var xAxisG = rootG.append("g").attr("class", "xAxis4Bar").attr("transform", `translate(0,${svgHInner})`);
+var yAxisG = rootG.append("g").attr("class", "yAxis4Bar").attr("fill-opacity", 0);
+var xScale = d3.scaleLinear().range([0, svgWInner]);
+var yScale = d3.scaleBand().range([svgHInner, 0]);
+var xAxis = d3.axisBottom()
+    .scale(xScale)
+    .ticks(config.ticks)
+    .tickPadding(10)
+    .tickSizeInner(-svgHInner)
+    .tickSizeOuter(0)
+    .tickFormat(function (value) {
+        return value < 0 ? "" : value;
+    });
+var yAxis = d3.axisLeft().scale(yScale);
+
+var dateLabel = rootG.append("text")
+    .attr("class", "dateLabel")
+    .attr("text-anchor", "end")
+    .attr("transform", `translate(${svgWInner},${config.sorted < 0 ? svgHInner : config.padding})`);
 
 var showCurDatas = function (datas) {
     var minX = d3.min(datas, data4X);
@@ -131,6 +139,16 @@ var dataEnterInit = function (enters) {
         .append("g")
         .attr("class", "barGroup")
         .attr("transform", `translate(0, ${svgH})`);
+    if (showLeftLabel()) {
+        enterG.append("text")
+            .attr("x", -8)
+            .attr("y", barTextH)
+            .attr("fill", dataColor)
+            .attr("fill-opacity", 1)
+            .attr("font-size", config.font_size - 2)
+            .attr("text-anchor", "end")
+            .text(dataLabel);
+    }
     enterG.append("rect")
         .attr("class", "barRect")
         .attr("x", 0)
@@ -140,15 +158,17 @@ var dataEnterInit = function (enters) {
         .attr("rx", barRx)
         .attr("fill", dataColor)
         .attr("fill-opacity", 0);
-    enterG.append("text")
-        .attr("class", "barType")
-        .attr("x", 0)
-        .attr("y", barTextH)
-        .attr("fill", "#FFFFFF")
-        .attr("fill-opacity", 0.5)
-        .attr("font-size", config.font_size)
-        .attr("text-anchor", "end")
-        .text(dataLabel);
+    if (showRightLabel()) {
+        enterG.append("text")
+            .attr("class", "barType")
+            .attr("x", 0)
+            .attr("y", barTextH)
+            .attr("fill", "#FFFFFF")
+            .attr("fill-opacity", 0.5)
+            .attr("font-size", config.font_size)
+            .attr("text-anchor", "end")
+            .text(dataLabel);
+    }
     enterG.append("text")
         .attr("class", "barValue")
         .attr("x", 0)
