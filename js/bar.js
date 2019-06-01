@@ -42,7 +42,7 @@ var showDatas = function () {
             return config.sorted * (Number(d1.value) - Number(d2.value));
         });
         dateLabel.text(curDate);
-        showCurDatas(curDatas);
+        showCurDatas(curDatas.slice(0, d3.max([5, config.limit_num])));
     }, config.refresh_interval);
 };
 
