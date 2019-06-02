@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>COLORS</title>
+    <style>
+        .colorBlock {
+            width: 80px;
+            height: 30px;
+            display: inline-block;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body style="padding: 30px 30px 0px 30px;">
+    <header> </header>
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript">
+
+        for (var key in d3) {
+            if (key.indexOf("scheme") == 0) {
+                var $diva = $("<div>").html(key);
+                var $div = $("<div>");
+                d3[key].forEach(colors => {
+                    if (typeof colors == "string") {
+                        var $color = $("<div>").addClass("colorBlock").html(colors).css("background-color", colors);
+                        $div.append($color);
+                    } else {
+                        var $div2 = $("<div>");
+                        colors.forEach(color => {
+                            var $color = $("<div>").addClass("colorBlock").html(color).css("background-color", color);
+                            $div2.append($color);
+                        });
+                        $div.append($div2);
+                    }
+                });
+                $("header").append($diva).append($div);
+            }
+        }
+    </script>
+</body>
+
+</html>

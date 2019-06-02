@@ -1,3 +1,6 @@
+center {
+    padding-top: 30px;
+}
 
 g.xAxis4Bar path.domain, g.yAxis4Bar path.domain, g.yAxis4Bar g.tick{
     display: none;
@@ -10,5 +13,5 @@ g.xAxis4Bar g.tick line {
 
 g.xAxis4Bar g.tick text {
     fill: #8E8883;
-    font-size: 12pt;
+    font-size: 12px;
 }

@@ -60,3 +60,16 @@ const dateConfig = {
     font_size: 60,  // 字体大小
     fill: "#5C5C5C"  // 颜色
 };
+
+// 颜色列表，更多颜色见 color.html
+const colors = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+    "#8c564b", "#e377c2", "#bcbd22", "#17becf", "#7fc97f",
+    "#f0027f", "#1b9e77", "#a6761d", "#fdbf6f", "#fbb4ae",
+    "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#e5d8bd",
+    "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00",
+    "#ffff33", "#a65628", "#f781bf", "#66c2a5", "#fc8d62",
+    "#8da0cb", "#e78ac3", "#a6d854", "#ffd92f", "#e5c494",
+    "#b3b3b3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072",
+    "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9",
+    "#bc80bd", "#ccebc5", "#ffed6f", "#ffff99", "#7f7f7f"];

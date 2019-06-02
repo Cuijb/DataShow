@@ -28,7 +28,7 @@ var readerOnload = function (result) {
     }
 };
 
-var curDate = "", curDatas = [];
+var curDate = "", curDatas = [], curColors = { "num": 0 };
 var showDatas = function () {
     var refreshInterval = setInterval(function () {
         if (!dates.length) {
@@ -41,8 +41,17 @@ var showDatas = function () {
         curDatas.sort(function (d1, d2) {
             return config.sorted * (Number(d1.value) - Number(d2.value));
         });
+        var showedDatas = curDatas.slice(0, d3.max([5, config.limit_num]));
+        showedDatas.forEach(function (data) {
+            if (!!!curColors[data.type]) {
+                var color = colors[curColors.num % colors.length];
+                curColors.num++;
+                curColors[data.type] = color;
+            }
+        });
+
         dateLabel.text(curDate);
-        showCurDatas(curDatas.slice(0, d3.max([5, config.limit_num])));
+        showCurDatas(showedDatas);
     }, config.refresh_interval);
 };
 
@@ -75,7 +84,7 @@ var dataLabel = function (data) {
 };
 
 var dataColor = function (data) {
-    return d3.schemeCategory10[Math.floor(data.type.charCodeAt() % 10)];
+    return curColors[data.type];
 };
 
 var barH = 1.4 * config.font_size;
