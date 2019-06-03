@@ -5,7 +5,7 @@ $("#dataFile").change(function () {
     reader.readAsText(this.files[0], "UTF-8");
 });
 
-var dates = [], datasByDate = {};
+var dates = [], datasByDate = {}, dataColors = { "num": 0 };
 var readerOnload = function (result) {
     $("#fileProgress").val(100);
     try {
@@ -20,6 +20,10 @@ var readerOnload = function (result) {
                 datasByDate[data.date] = [];
             }
             datasByDate[data.date].push(data);
+
+            if(!!!dataColors[data.type] && !!data.color) {
+                dataColors[data.type] = data.color;
+            }
         });
         dates.sort();
         showDatas();
@@ -28,7 +32,7 @@ var readerOnload = function (result) {
     }
 };
 
-var curDate = "", curDatas = [], curColors = { "num": 0 };
+var curDate = "", curDatas = [];
 var showDatas = function () {
     var refreshInterval = setInterval(function () {
         if (!dates.length) {
@@ -43,10 +47,9 @@ var showDatas = function () {
         });
         var showedDatas = curDatas.slice(0, d3.max([5, config.limit_num]));
         showedDatas.forEach(function (data) {
-            if (!!!curColors[data.type]) {
-                var color = colors[curColors.num % colors.length];
-                curColors.num++;
-                curColors[data.type] = color;
+            if (!!!dataColors[data.type]) {
+                dataColors[data.type] = colors[dataColors.num % colors.length];
+                dataColors.num++;
             }
         });
 
@@ -84,7 +87,7 @@ var dataLabel = function (data) {
 };
 
 var dataColor = function (data) {
-    return curColors[data.type];
+    return dataColors[data.type];
 };
 
 var barH = 1.4 * config.font_size;
