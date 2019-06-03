@@ -5,7 +5,7 @@ $("#dataFile").change(function () {
     reader.readAsText(this.files[0], "UTF-8");
 });
 
-var dates = [], datasByDate = {}, dataColors = { "num": 0 };
+var dates = [], datasByDate = {}, dataColors = { "num": 0 }, dataImgs = { "num": 0 };
 var readerOnload = function (result) {
     $("#fileProgress").val(100);
     try {
@@ -21,8 +21,12 @@ var readerOnload = function (result) {
             }
             datasByDate[data.date].push(data);
 
-            if(!!!dataColors[data.type] && !!data.color) {
+            if (!!!dataColors[data.type] && !!data.color) {
                 dataColors[data.type] = data.color;
+            }
+
+            if (!!!dataImgs[data.type] && !!data.image) {
+                dataImgs[data.type] = data.image;
             }
         });
         dates.sort();
@@ -92,7 +96,11 @@ var dataColor = function (data) {
 
 var barH = 1.4 * config.font_size;
 var barRx = barH / 2;
-var barTextH = barH + (config.font_size - 4) / 2;
+var barTextX = -8;
+var barTextY = barH + (config.font_size - 4) / 2;
+var barImgW = 1.2 * barH;
+var barImgX = barTextX - barImgW / 2;
+var barImgY = (barH + barImgW - 4) / 2;
 var svg_left_padding = showLeftLabel() ? padding.label_left : padding.left;
 var svgW = config.width;
 var svgH = config.height;
@@ -163,11 +171,47 @@ var dataEnterInit = function (enters) {
         .attr("class", "barGroup")
         .attr("transform", `translate(0, ${svgH})`);
     if (showLeftLabel()) {
-        enterG.append("text")
-            .attr("x", -8)
-            .attr("y", barTextH)
+        var enterWithImg = enterG.filter(function (data) {
+            return !!dataImgs[data.type] ? this : null;
+        });
+        enterWithImg
+            .append("defs")
+            .append("pattern")
+            .attr("id", function (data) {
+                return data.type + "Img";
+            })
+            .attr("width", barImgW)
+            .attr("height", barImgW)
+            .append("image")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", barImgW)
+            .attr("height", barImgW)
+            .attr("href", function (data) {
+                return "img/" + dataImgs[data.type];
+            });
+        enterWithImg
+            .append("circle")
+            .attr("class", "barImg")
+            .attr("fill-opacity", 0)
+            .attr("x", barImgX)
+            .attr("cx", barImgX)
+            .attr("cy", barImgY)
+            .attr("r", barImgW / 2)
+            .attr('fill', function (data) {
+                return "url(#" + data.type + "Img)";
+            })
+            .attr("fill-opacity", 0);
+
+        var enterWithoutImg = enterG.filter(function (data) {
+            return !!dataImgs[data.type] ? null : this;
+        });
+        enterWithoutImg.append("text")
+            .attr("class", "barLabel")
+            .attr("x", barTextX)
+            .attr("y", barTextY)
             .attr("fill", dataColor)
-            .attr("fill-opacity", 1)
+            .attr("fill-opacity", 0.5)
             .attr("font-size", config.font_size - 2)
             .attr("text-anchor", "end")
             .text(dataLabel);
@@ -185,7 +229,7 @@ var dataEnterInit = function (enters) {
         enterG.append("text")
             .attr("class", "barType")
             .attr("x", 0)
-            .attr("y", barTextH)
+            .attr("y", barTextY)
             .attr("fill", "#FFFFFF")
             .attr("fill-opacity", 0.5)
             .attr("font-size", config.font_size)
@@ -195,7 +239,7 @@ var dataEnterInit = function (enters) {
     enterG.append("text")
         .attr("class", "barValue")
         .attr("x", 0)
-        .attr("y", barTextH)
+        .attr("y", barTextY)
         .attr("fill", dataColor)
         .attr("fill-opacity", 0.5)
         .attr("font-size", config.font_size)
@@ -212,6 +256,10 @@ var dataExistRefresh = function (exits) {
     refreshTransition.attr("transform", function (data) {
         return `translate(0, ${scale4Y(data)})`;
     });
+    refreshTransition.select("text.barLabel")
+        .attr("fill-opacity", 1);
+    refreshTransition.select("circle.barImg")
+        .attr("fill-opacity", 1);
     refreshTransition.select("rect.barRect")
         .attr("width", scale4X)
         .attr("fill-opacity", 1);
@@ -240,6 +288,10 @@ var dataExitRemove = function (exits) {
         .ease(d3.easeLinear)
         .duration(transition.duration);
     exitTransition.attr("transform", `translate(0,${svgH})`)
+        .attr("fill-opacity", 0);
+    exitTransition.select("text.barLabel")
+        .attr("fill-opacity", 0);
+    exitTransition.select("circle.barImg")
         .attr("fill-opacity", 0);
     exitTransition.select("rect.barRect")
         .attr("width", 0)
