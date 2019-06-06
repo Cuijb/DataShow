@@ -41,7 +41,9 @@ var showDatas = function () {
     var refreshInterval = setInterval(function () {
         if (!dates.length) {
             clearInterval(refreshInterval);
-            $("header").toggle(transition.delay);
+            setTimeout(function () {
+                $("header").toggle(config.refresh_interval / 2);
+            }, config.refresh_interval);
             return;
         }
         curDate = dates.shift();
